@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WildFly Swarm Support UI
+Bundle-SymbolicName: org.jboss.tools.servers.wildfly.swarm.ui;singleton:=true
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: org.jboss.tools.servers.wildfly.swarm.ui.internal.UIActivator
+Bundle-Vendor: Red Hat, Inc.
+Require-Bundle: org.eclipse.core.runtime,
+ org.jboss.tools.servers.wildfly.swarm.core;bundle-version="0.0.1",
+ org.eclipse.ui.workbench
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

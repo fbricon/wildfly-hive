@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.jboss.tools.servers.wildfly.swarm.feature_0.0.0.qualifier.jar" id="org.jboss.tools.servers.wildfly.swarm.feature" version="0.0.0">
+      <category name="swarm"/>
+   </feature>
+   <!--feature url="features/org.jboss.tools.servers.wildfly.swarm.feature.source_0.0.0.qualifier.jar" id="org.jboss.tools.servers.wildfly.swarm.feature.source" version="0.0.0">
+      <category name="swarm.sdk"/>
+   </feature-->
+   <category-def name="swarm" label="WildFly Swarm Support"/>
+   <category-def name="swarm.sdk" label="WildFly Swarm Support (SDK)"/>
+</site>
