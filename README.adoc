@@ -8,3 +8,14 @@ This was inspired by the https://spring.io/blog/2015/10/08/the-spring-boot-dashb
 But instead of coming up with a new view, the existing Servers view from Eclipse WTP is used.
 
 image::http://content.screencast.com/users/fbricon/folders/Jing/media/9bfd8cee-ff66-40fc-aa25-596e2ab716d7/00000321.png[width=600]
+
+The PoC can be installed  in Eclipse from this p2 repository : http://download.jboss.org/jbosstools/builds/staging/wildfly-hive/all/repo/
+
+It requires Eclipse WTP, m2e, JBoss Tools Server Tools to run.
+
+- Import a WildFly Swarm-based project
+- Open the servers view, a new project should have been added
+- Select the WildFly Swarm server and click start or debug
+- profit
+
+Since it's a PoC, it's lacking a huge amount of features to make it really usable, like being able to configure the server launch configuration, port offset, configuration read from pom.xml, run multiple instances, make the swarm detection more reliable and so on. But it's EPL, so feel free to fork, hack and PR away.
