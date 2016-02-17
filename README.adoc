@@ -14,7 +14,7 @@ The PoC can be installed  in Eclipse from this p2 repository : http://download.j
 It requires Eclipse WTP, m2e, JBoss Tools Server Tools to run.
 
 - Import a WildFly Swarm-based project
-- Open the servers view, a new project should have been added
+- Open the servers view, a new WildFly Swarm server should have been added
 - Select the WildFly Swarm server and click start or debug
 - profit
 
