@@ -1,0 +1,8 @@
+# wildfly-hive
+
+Proof of concept plugin to automatically create WildFly Swarm servers, start/stop them in Eclipse WTP.
+
+This was inspired by the https://spring.io/blog/2015/10/08/the-spring-boot-dashboard-in-sts-part-1-local-boot-apps[Spring Boot Dashboard in STS].
+But instead of coming up with a new view, the existing Servers view from Eclipse WTP is used.
+
+image::http://content.screencast.com/users/fbricon/folders/Jing/media/9bfd8cee-ff66-40fc-aa25-596e2ab716d7/00000321.png[width=600]
