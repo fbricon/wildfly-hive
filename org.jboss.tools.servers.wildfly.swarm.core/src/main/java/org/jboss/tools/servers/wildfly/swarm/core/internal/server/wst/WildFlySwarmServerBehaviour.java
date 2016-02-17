@@ -53,9 +53,9 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 		String mainClass =  mainClasses.iterator().next();
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainClass);
+		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, " -noverify -server -Xms512m -Xmx512m");
 		//if m2e project only
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.jboss.tools.servers.wildfly.swarm.launchconfig.classpathProvider");
-		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, " -noverify -server -Xms512m -Xmx512m");
 	}
 
 	@Override
@@ -63,7 +63,6 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 		return Status.OK_STATUS;
 	}
 	
-
 	@Override
 	public IStatus canStop() {
 		return Status.OK_STATUS;
@@ -76,7 +75,6 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 			try {
 				launch.terminate();
 			} catch (DebugException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

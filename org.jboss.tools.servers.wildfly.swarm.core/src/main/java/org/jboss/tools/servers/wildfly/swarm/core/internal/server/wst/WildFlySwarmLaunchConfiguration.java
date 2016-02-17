@@ -65,9 +65,13 @@ public class WildFlySwarmLaunchConfiguration extends JavaLaunchDelegate {
 			behavior.setServerStarting();
 			behavior.setRunMode(mode);
 			super.launch(configuration, mode, launch, monitor);
+			List<IProcess> processes = Arrays.asList(launch.getProcesses());
 			IDebugEventSetListener terminateListener = (events) -> {
 				if (events != null) {
-					Optional<DebugEvent> terminateEvent = Stream.of(events).filter(e -> e.getKind() == DebugEvent.TERMINATE).findFirst();
+					Optional<DebugEvent> terminateEvent = Stream.of(events)
+																.filter(e -> processes.contains(e.getSource()) 
+																		&& e.getKind() == DebugEvent.TERMINATE)
+																.findFirst();
 					if (terminateEvent.isPresent()) {
 						stopServer(behavior);
 					}
