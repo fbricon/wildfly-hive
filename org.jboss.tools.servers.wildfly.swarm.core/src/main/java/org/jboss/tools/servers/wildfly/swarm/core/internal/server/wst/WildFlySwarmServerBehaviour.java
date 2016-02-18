@@ -40,7 +40,11 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 		if (server == null) {
 			return;
 		}
-		String projectName = server.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+		String projectName = workingCopy.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+		if (projectName == null) {
+			projectName = server.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
+		}
 		
 		IJavaProject proj = JavaRuntime.getJavaProject(workingCopy);
 		Collection<String> mainClasses = MainClassDetector.findMainClasses(proj, monitor);

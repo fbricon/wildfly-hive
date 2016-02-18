@@ -32,7 +32,7 @@ public class WildFlySwarmServerHelper {
 
 	public static IServer createServer(IJavaProject javaProject, String mainClass, IProgressMonitor monitor) throws CoreException {
 		String projectName = javaProject.getProject().getName();
-		System.err.println("Creating wildfly server for project " + projectName+ " with main class " + mainClass);
+		//System.err.println("Creating wildfly server for project " + projectName+ " with main class " + mainClass);
 		IServerType type = ServerCore.findServerType(SERVER_TYPE);
 		String suffixed = ServerNamingUtility.getDefaultServerName("WildFly Swarm - "+javaProject.getProject().getName());
 		IServerWorkingCopy wc = type.createServer(suffixed, null, new NullProgressMonitor());
