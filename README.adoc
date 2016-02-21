@@ -18,4 +18,6 @@ It requires Eclipse WTP, m2e, JBoss Tools Server Tools to run.
 - Select the WildFly Swarm server and click start or debug
 - profit
 
+image:http://img.youtube.com/vi/s8xmaBurfCg/0.jpg["Click to play demo", width=600, link="https://www.youtube.com/watch?v=s8xmaBurfCg"]
+
 Since it's a PoC, it's lacking a huge amount of features to make it really usable, like being able to configure the server launch configuration, proper port offset, configuration read from pom.xml, run multiple instances of the same server, make the swarm detection more reliable and so on. But it's EPL, so feel free to fork, hack and PR away.
