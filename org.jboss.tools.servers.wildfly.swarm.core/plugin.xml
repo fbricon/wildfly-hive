@@ -5,7 +5,7 @@
          point="org.eclipse.wst.server.core.serverTypes">
       <serverType
             behaviourClass="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.WildFlySwarmServerBehaviour"
-            class="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.WildFlySwarmServerDelegate"
+            class="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.WildFlySwarmServer"
             description="WildFly Swarm Server"
             hasConfiguration="false"
             id="org.jboss.tools.wildfly.swarm.serverType"

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,6 +26,7 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerUtil;
+import org.jboss.ide.eclipse.as.core.util.JBossServerBehaviorUtils;
 import org.jboss.ide.eclipse.as.wtp.core.server.behavior.ControllableServerBehavior;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.MainClassDetector;
 
@@ -57,9 +60,34 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 		String mainClass =  mainClasses.iterator().next();
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainClass);
-		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, " -noverify -server -Xms512m -Xmx512m");
+		
+		StringBuilder vmArgs = new StringBuilder();
+		vmArgs.append(" -noverify -server -Xms512m -Xmx512m -Djava.net.preferIPv4Stack=true -Dswarm.bind.address=127.0.0.1 ");
+		int port = findAvailablePort(8080);
+		if (port > 0) {
+			vmArgs.append(" -Dswarm.http.port=").append(port);
+		}
+		
+		//XXX seems weird/wrong
+		final ControllableServerBehavior behavior = (ControllableServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(server);
+		if (behavior != null) {
+			behavior.putSharedData("welcomePage", "http://localhost:"+port+"/");
+		}
+		
+		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs.toString());
 		//if m2e project only
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.jboss.tools.servers.wildfly.swarm.launchconfig.classpathProvider");
+	}
+
+	private int findAvailablePort(int port) {
+		for (int i=0; i<100;i++) {
+		   int newPort = port+i;
+		   try (Socket socket = new Socket("localhost", newPort)) {
+		   } catch (IOException ignored) {
+			   return newPort;
+		   }
+		}
+		return port;
 	}
 
 	@Override

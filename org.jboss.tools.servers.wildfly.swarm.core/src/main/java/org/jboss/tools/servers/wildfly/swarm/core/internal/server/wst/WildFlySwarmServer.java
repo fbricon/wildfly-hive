@@ -16,9 +16,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.model.ServerDelegate;
+import org.jboss.ide.eclipse.as.core.server.internal.IExtendedPropertiesProvider;
+import org.jboss.ide.eclipse.as.core.server.internal.extendedproperties.ServerExtendedProperties;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.CoreActivator;
 
-public class WildFlySwarmServerDelegate extends ServerDelegate {
+public class WildFlySwarmServer extends ServerDelegate implements IExtendedPropertiesProvider{
 	
 	public IStatus canModifyModules(IModule[] add, IModule[] remove) {
 		return new Status(IStatus.WARNING, CoreActivator.PLUGIN_ID, "This server doesn't support modules");
@@ -35,6 +37,11 @@ public class WildFlySwarmServerDelegate extends ServerDelegate {
 	@Override
 	public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor) throws CoreException {
 
+	}
+
+	@Override
+	public ServerExtendedProperties getExtendedProperties() {
+		return new WildFlySwarmServerExtendedProperties(getServer());
 	}
 
 	
