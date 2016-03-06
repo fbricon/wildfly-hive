@@ -7,6 +7,8 @@ Bundle-Activator: org.jboss.tools.servers.wildfly.swarm.ui.internal.UIActivator
 Bundle-Vendor: Red Hat, Inc.
 Require-Bundle: org.eclipse.core.runtime,
  org.jboss.tools.servers.wildfly.swarm.core;bundle-version="0.0.1",
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ org.eclipse.wst.server.core,
+ org.eclipse.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

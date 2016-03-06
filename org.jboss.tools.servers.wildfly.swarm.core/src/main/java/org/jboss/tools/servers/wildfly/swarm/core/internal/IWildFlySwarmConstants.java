@@ -12,5 +12,7 @@ package org.jboss.tools.servers.wildfly.swarm.core.internal;
 
 public interface IWildFlySwarmConstants {
 
+	String SERVER_TYPE = "org.jboss.tools.wildfly.swarm.serverType"; 
+	
 	String DEFAULT_MAIN_CLASS = "org.wildfly.swarm.Swarm";
 }
