@@ -40,7 +40,6 @@ public class ClasspathChangeListener implements IElementChangedListener {
 		case IJavaElement.JAVA_PROJECT:
 			IJavaProject javaProject = (IJavaProject) el;
 			if (isClasspathChanged(delta)) {
-				System.err.println(el + " classpath changed");
 				detectionJob.analyze(javaProject);
 			}
 			break;

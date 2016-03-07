@@ -23,7 +23,6 @@ public class WildFlyServerListener extends ServerLifecycleAdapter {
 	@Override
 	public void serverAdded(IServer server) {
 		if (server.getServerType() != null && IWildFlySwarmConstants.SERVER_TYPE.equals(server.getServerType().getId())) {
-			System.err.println(server.getName() + " added");
 			ViewUtils.showServersView();
 		}
 	}

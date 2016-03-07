@@ -29,7 +29,6 @@ public class CoreActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		instance = this;
-		System.err.println("Starting Wildfly Swarm Core");
 		detectionJob = new WildlfySwarmDetectionJob();
 		classpathChangeListener = new ClasspathChangeListener(detectionJob);
 		JavaCore.addElementChangedListener(classpathChangeListener);

@@ -66,9 +66,9 @@ public class WildlfySwarmDetectionJob extends Job {
 	}
 
 	private void swarmify(IJavaProject p, IProgressMonitor monitor) {
-		System.err.println("analyzing " + p.getProject());
+		//System.err.println("analyzing " + p.getProject());
 		if (isWildflySwarmProject(p)) {
-			System.err.println(p.getProject() + " is probably a wildfly swarm project");
+			//System.err.println(p.getProject() + " is probably a wildfly swarm project");
 			IServer server = WildFlySwarmServerHelper.findWildflySwarmServer(p, monitor);
 			if (server == null) {
 				try {
