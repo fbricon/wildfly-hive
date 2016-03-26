@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.jboss.tools.servers.wildfly.swarm.core.internal;
 
+import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -31,7 +32,7 @@ public class CoreActivator implements BundleActivator {
 		instance = this;
 		detectionJob = new WildlfySwarmDetectionJob();
 		classpathChangeListener = new ClasspathChangeListener(detectionJob);
-		JavaCore.addElementChangedListener(classpathChangeListener);
+		JavaCore.addElementChangedListener(classpathChangeListener, ElementChangedEvent.POST_CHANGE);
 	}
 
 	@Override

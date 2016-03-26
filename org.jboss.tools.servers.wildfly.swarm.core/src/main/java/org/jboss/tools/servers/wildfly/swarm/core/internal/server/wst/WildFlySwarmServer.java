@@ -36,7 +36,6 @@ public class WildFlySwarmServer extends ServerDelegate implements IExtendedPrope
 
 	@Override
 	public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor) throws CoreException {
-
 	}
 
 	@Override
@@ -44,5 +43,6 @@ public class WildFlySwarmServer extends ServerDelegate implements IExtendedPrope
 		return new WildFlySwarmServerExtendedProperties(getServer());
 	}
 
+	
 	
 }

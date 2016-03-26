@@ -11,9 +11,6 @@
 package org.jboss.tools.servers.wildfly.swarm.ui.internal;
 
 import org.eclipse.wst.server.core.IServer;
-import org.eclipse.wst.server.core.IServerLifecycleListener;
-import org.eclipse.wst.server.core.IServerListener;
-import org.eclipse.wst.server.core.ServerEvent;
 import org.eclipse.wst.server.core.util.ServerLifecycleAdapter;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.IWildFlySwarmConstants;
 import org.jboss.tools.servers.wildfly.swarm.ui.internal.util.ViewUtils;

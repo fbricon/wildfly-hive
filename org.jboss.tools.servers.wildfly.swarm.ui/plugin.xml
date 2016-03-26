@@ -6,4 +6,20 @@
       <startup class="org.jboss.tools.servers.wildfly.swarm.ui.internal.Startup">
       </startup>
    </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.jboss.tools.servers.wildfly.swarm.ui.internal.launchconfig.WildFlySwarmLaunchConfigurationTabGroup"
+            description="Launch Tabs for WildFly Swarm Server"
+            id="org.jboss.tools.servers.wildfly.swarm.ui.internal.launchconfig.WildFlySwarmLaunchConfigurationTabGroup"
+            type="org.jboss.tools.servers.wildfly.swarm.core.serverLaunchConfig"/>
+   </extension>
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/wildfly-swarm-16x16.png"
+            configTypeID="org.jboss.tools.servers.wildfly.swarm.core.serverLaunchConfig"
+            id="org.jboss.tools.servers.wildfly.swarm.ui.serverLaunchConfigTypeImage"/>
+   </extension>
+   
+   
 </plugin>

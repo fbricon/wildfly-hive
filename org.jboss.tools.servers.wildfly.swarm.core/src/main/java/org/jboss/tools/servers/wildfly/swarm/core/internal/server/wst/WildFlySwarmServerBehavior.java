@@ -31,10 +31,13 @@ import org.jboss.ide.eclipse.as.wtp.core.server.behavior.ControllableServerBehav
 import org.jboss.tools.servers.wildfly.swarm.core.internal.MainClassDetector;
 
 /**
- * @author Fred Bricon
+ * Handles WildFly Swarm server instances' behavior
  * 
+ * @author Fred Bricon
  */
-public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
+public class WildFlySwarmServerBehavior extends ControllableServerBehavior  {
+
+	private static final String DEVAULT_VM_ARGS = " -noverify -server -Xms512m -Xmx512m -Djava.net.preferIPv4Stack=true -Dswarm.bind.address=127.0.0.1 ";
 
 	@Override
 	public void setupLaunchConfiguration(ILaunchConfigurationWorkingCopy workingCopy, IProgressMonitor monitor)
@@ -48,46 +51,45 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 			projectName = server.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
 			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
 		}
-		
 		IJavaProject proj = JavaRuntime.getJavaProject(workingCopy);
 		Collection<String> mainClasses = MainClassDetector.findMainClasses(proj, monitor);
 		if (mainClasses.isEmpty()) {
 			return;
 		}
 		if ( mainClasses.size() > 1) {
-			//ohoh
+			//TODO handle multiple Main classes 
 		}
 		String mainClass =  mainClasses.iterator().next();
-		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainClass);
 		
-		StringBuilder vmArgs = new StringBuilder();
-		vmArgs.append(" -noverify -server -Xms512m -Xmx512m -Djava.net.preferIPv4Stack=true -Dswarm.bind.address=127.0.0.1 ");
-		int port = findAvailablePort(8080);
-		if (port > 0) {
-			vmArgs.append(" -Dswarm.http.port=").append(port);
-		}
-		
-		//XXX seems weird/wrong
-		final ControllableServerBehavior behavior = (ControllableServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(server);
-		if (behavior != null) {
-			behavior.putSharedData("welcomePage", "http://localhost:"+port+"/");
-		}
-		
+        StringBuilder vmArgs = new StringBuilder(DEVAULT_VM_ARGS);
+        int targetPort = 8080;
+		int portOffset = detectPortOffset(targetPort);
+        if (portOffset > 0) {
+        	   targetPort += portOffset;
+               vmArgs.append(" -Dswarm.port.offset=").append(portOffset);
+        }
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs.toString());
+			
+		final ControllableServerBehavior behavior = (ControllableServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(server);
+		//TODO parse Main class AST to detect default context root?
+		if (behavior != null) {
+			//XXX seems weird/wrong
+			behavior.putSharedData("welcomePage", "http://localhost:"+targetPort+"/");
+		}
 		//if m2e project only
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.jboss.tools.servers.wildfly.swarm.launchconfig.classpathProvider");
 	}
 
-	private int findAvailablePort(int port) {
-		for (int i=0; i<100;i++) {
-		   int newPort = port+i;
+	private int detectPortOffset(int port) {
+		for (int offset=0; offset<100;offset++) {
+		   int newPort = port+offset;
 		   try (Socket socket = new Socket("localhost", newPort)) {
 		   } catch (IOException ignored) {
-			   return newPort;
+			   return offset;
 		   }
 		}
-		return port;
+		return -1;//TODO handle error?
 	}
 
 	@Override
@@ -98,6 +100,12 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 	@Override
 	public IStatus canStop() {
 		return Status.OK_STATUS;
+	}
+	
+	@Override
+	public void setServerStarting() {
+		super.setServerStarting();
+		setServerPublishState(IServer.PUBLISH_STATE_UNKNOWN);
 	}
 	
 	@Override
@@ -113,4 +121,5 @@ public class WildFlySwarmServerBehaviour extends ControllableServerBehavior  {
 		setServerStopped();
 	}
 
+	
 }

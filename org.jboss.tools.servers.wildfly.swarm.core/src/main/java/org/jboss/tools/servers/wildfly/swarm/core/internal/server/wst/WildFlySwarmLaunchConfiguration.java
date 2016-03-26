@@ -27,12 +27,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.internal.launching.environments.EnvironmentsManager;
 import org.eclipse.jdt.launching.IVMInstall;
-import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaLaunchDelegate;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.environments.IExecutionEnvironment;
-import org.eclipse.wst.server.core.IServer;
-import org.eclipse.wst.server.core.internal.Server;
 import org.jboss.ide.eclipse.as.core.util.JBossServerBehaviorUtils;
 import org.jboss.ide.eclipse.as.wtp.core.server.behavior.ControllableServerBehavior;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.CoreActivator;
@@ -41,6 +37,7 @@ import org.jboss.tools.servers.wildfly.swarm.core.internal.CoreActivator;
  * @author Fred Bricon
  * 
  */
+@SuppressWarnings("restriction")
 public class WildFlySwarmLaunchConfiguration extends JavaLaunchDelegate {
 
 	private static final String TERMINATE_LISTENER = "TERMINATE_LISTENER";
@@ -48,13 +45,14 @@ public class WildFlySwarmLaunchConfiguration extends JavaLaunchDelegate {
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		final ControllableServerBehavior behavior = (ControllableServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(configuration);
+		final WildFlySwarmServerBehavior behavior = (WildFlySwarmServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(configuration);
 		if (behavior == null) {
 			throw new CoreException(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to start wildfly swarm process, ControllableServerBehavior is missing"));
 		}
 		try {
 			behavior.setServerStarting();
 			behavior.setRunMode(mode);
+			
 			super.launch(configuration, mode, launch, monitor);
 			List<IProcess> processes = Arrays.asList(launch.getProcesses());
 			IDebugEventSetListener terminateListener = (events) -> {
@@ -71,7 +69,6 @@ public class WildFlySwarmLaunchConfiguration extends JavaLaunchDelegate {
 			behavior.putSharedData(TERMINATE_LISTENER, terminateListener);
 			DebugPlugin.getDefault().addDebugEventListener(terminateListener );
 			behavior.setServerStarted();
-			((Server)behavior.getServer()).setServerPublishState(IServer.PUBLISH_STATE_NONE);
 		} catch (Exception e ) {
 			stopServer(behavior);
 			if (e instanceof CoreException) {

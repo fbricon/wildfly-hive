@@ -4,17 +4,19 @@
    <extension
          point="org.eclipse.wst.server.core.serverTypes">
       <serverType
-            behaviourClass="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.WildFlySwarmServerBehaviour"
+            behaviourClass="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.WildFlySwarmServerBehavior"
             class="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.WildFlySwarmServer"
+            name="WildFly Swarm Server"
             description="WildFly Swarm Server"
             hasConfiguration="false"
             id="org.jboss.tools.wildfly.swarm.serverType"
             initialState="stopped"
             launchConfigId="org.jboss.tools.servers.wildfly.swarm.core.serverLaunchConfig"
-            launchModes="run"
-            name="WildFly Swarm Server"
+            launchModes="run,debug"
             runtime="false"
             runtimeTypeId="org.jboss.tools.servers.wildfly.swarm.core.serverTypeRuntime"
+            startTimeout="45000"
+            stopTimeout="30000"
             supportsRemoteHosts="false">
       </serverType>
    </extension>
@@ -42,19 +44,33 @@
             id="org.jboss.tools.servers.wildfly.swarm.core.serverLaunchConfig"
             modes="run,debug"
             name="WildFly Swarm"
-            public="false">
+            public="true"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jst.server.generic.core.sourcePathComputer"
+            >
       </launchConfigurationType>
    </extension>
+
+   	<extension
+         point="org.jboss.ide.eclipse.as.wtp.core.serverSubsystem">
+    <!-- Publish Controller. Seems overkill to define a noop publisher. Need to see how to get rid of it -->
+      <subsystem
+            system="publish"
+            id="publish.noop.swarm"
+            name="No Op publisher"
+            class="org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst.NoOpPublishController">
+      </subsystem>
+      <subsystemMapping
+            id="publish.noop.swarm"
+            mappedId="publish.noop.swarm"
+            serverTypes="org.jboss.tools.wildfly.swarm.serverType">
+      </subsystemMapping>
+   </extension>
+   
    <extension point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider 
           id="org.jboss.tools.servers.wildfly.swarm.launchconfig.classpathProvider"
           class="org.jboss.tools.servers.wildfly.swarm.core.internal.maven.MavenRuntimeClasspathProvider"/>
    </extension>
-
-   <extension point="org.eclipse.core.runtime.adapters">
-    <factory adaptableType="org.eclipse.wst.server.core.IServer"
-             class="org.jboss.tools.servers.wildfly.swarm.ui.internal.WildFlySwarmServerModuleAdapterFactory">
-      <adapter type="org.eclipse.wst.server.ui.IServerModule" />
-    </factory>
-   </extension>
+   
 </plugin>

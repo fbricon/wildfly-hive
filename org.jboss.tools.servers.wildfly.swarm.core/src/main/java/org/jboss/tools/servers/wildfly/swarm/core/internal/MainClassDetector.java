@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
@@ -26,6 +27,9 @@ import org.eclipse.jdt.internal.debug.ui.launcher.MainMethodSearchEngine;
 @SuppressWarnings("restriction")
 public class MainClassDetector {
 
+	private MainClassDetector() {
+	}
+	
 	public static Collection<String> findMainClasses(IJavaProject p, IProgressMonitor monitor) {
 		MainMethodSearchEngine engine = new MainMethodSearchEngine();
 		int constraints = IJavaSearchScope.SOURCES;
@@ -41,9 +45,12 @@ public class MainClassDetector {
 	}
 
 	private static boolean hasContainerImport(IType t) {
-		return t.getCompilationUnit() != null && 
-				t.getCompilationUnit().getImport("org.wildfly.swarm.container.Container")
-				.exists();
+		ICompilationUnit compilationUnit = t.getCompilationUnit();
+		if (compilationUnit == null) {
+			return false;
+		}
+		return compilationUnit.getImport("org.wildfly.swarm.container.Container").exists() ||
+			   compilationUnit.getImport("org.wildfly.swarm.Swarm").exists();
 	}
 
 }

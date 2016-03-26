@@ -14,12 +14,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.wst.server.core.IServer;
@@ -46,10 +49,6 @@ public class WildlfySwarmDetectionJob extends Job {
 		}
 	}
 
-	public boolean hasWildFlySwarmDependency(IJavaProject javaProject) {
-		return false;
-	}
-
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Detecting Wildfly Swarm projects", IProgressMonitor.UNKNOWN);
@@ -58,33 +57,41 @@ public class WildlfySwarmDetectionJob extends Job {
 			projects = new ArrayList<>(this.queue);
 			this.queue.clear();
 		}
-		projects.forEach(p -> swarmify(p, monitor));
+		projects.forEach(p -> detectSwarm(p, monitor));
 		if (!queue.isEmpty()) {
 			schedule(SCHEDULE_DELAY);
 		}
 		return Status.OK_STATUS;
 	}
 
-	private void swarmify(IJavaProject p, IProgressMonitor monitor) {
-		//System.err.println("analyzing " + p.getProject());
+	private void detectSwarm(IJavaProject p, IProgressMonitor monitor) {
+		//System.out.println("analyzing " + p.getProject());
 		if (isWildflySwarmProject(p)) {
-			//System.err.println(p.getProject() + " is probably a wildfly swarm project");
-			IServer server = WildFlySwarmServerHelper.findWildflySwarmServer(p, monitor);
-			if (server == null) {
-				try {
-					createServer(p, monitor);
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-			}
+			//System.out.println(p.getProject() + " is probably a wildfly swarm project");
+			createServerIfNecessary(p, monitor);
 		} else {
-			IServer server = WildFlySwarmServerHelper.findWildflySwarmServer(p, monitor);
-			if (server != null) {
-				try {
-					server.delete();
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
+			deleteServerIfNecessary(p, monitor);
+		}
+	}
+	
+	private void createServerIfNecessary(IJavaProject p, IProgressMonitor monitor) {
+		IServer server = WildFlySwarmServerHelper.findWildflySwarmServer(p, monitor);
+		if (server == null) {
+			try {
+				createServer(p, monitor);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void deleteServerIfNecessary(IJavaProject p, IProgressMonitor monitor) {
+		IServer server = WildFlySwarmServerHelper.findWildflySwarmServer(p, monitor);
+		if (server != null) {
+			try {
+				server.delete();
+			} catch (CoreException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -106,9 +113,35 @@ public class WildlfySwarmDetectionJob extends Job {
 	}
 
 	private boolean isWildflySwarmProject(IJavaProject p) {
-		return p.isOpen() && hasInClassPath(p, "org.wildfly.swarm.container.Container");
+		if (!p.getProject().isAccessible()) {
+			return false;
+		}
+		try {
+			IClasspathEntry[] resolvedClasspath = p.getResolvedClasspath(true);
+			Stream<IClasspathEntry> classpath = Stream.of(resolvedClasspath);//.parallel();
+			return classpath.filter(cpe -> isSwarmEntry(cpe))
+							.findFirst()
+							.isPresent();
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return  false;
 	}
 
+	private boolean isSwarmEntry(IClasspathEntry cpe) {
+		//this is a quick n' very dirty detection
+		if (cpe.getEntryKind()==IClasspathEntry.CPE_LIBRARY
+				|| cpe.getEntryKind()==IClasspathEntry.CPE_PROJECT) {
+			IPath path = cpe.getPath();
+			String name = path.lastSegment();
+			//currently, according to Maven central search, 
+			//there's only 1 proper match for that artifactId
+			return name.startsWith("container-api");
+		}
+		return false;
+	}
+
+	/*
 	private boolean hasInClassPath(IJavaProject project, String className) {
 		try {
 			return project.findType(className) != null;
@@ -117,5 +150,6 @@ public class WildlfySwarmDetectionJob extends Job {
 		}
 		return false;
 	}
+	*/
 
 }
