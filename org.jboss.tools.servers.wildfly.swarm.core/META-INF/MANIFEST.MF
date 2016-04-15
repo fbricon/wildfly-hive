@@ -21,3 +21,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.jboss.tools.servers.wildfly.swarm.core.internal;x-friends:="org.jboss.tools.servers.wildfly.swarm.ui",
  org.jboss.tools.servers.wildfly.swarm.core.internal.server;x-friends:="org.jboss.tools.servers.wildfly.swarm.ui"
+Eclipse-BundleShape: dir

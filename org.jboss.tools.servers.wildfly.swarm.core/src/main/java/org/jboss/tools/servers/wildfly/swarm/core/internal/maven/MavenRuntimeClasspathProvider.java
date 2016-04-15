@@ -80,7 +80,8 @@ public class MavenRuntimeClasspathProvider extends StandardClasspathProvider {
 
   IMavenProjectRegistry projectManager = MavenPlugin.getMavenProjectRegistry();
 
-  public IRuntimeClasspathEntry[] computeUnresolvedClasspath(final ILaunchConfiguration configuration)
+  @Override
+public IRuntimeClasspathEntry[] computeUnresolvedClasspath(final ILaunchConfiguration configuration)
       throws CoreException {
     boolean useDefault = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, true);
     if(useDefault) {
@@ -100,11 +101,13 @@ public class MavenRuntimeClasspathProvider extends StandardClasspathProvider {
     return recoverRuntimePath(configuration, IJavaLaunchConfigurationConstants.ATTR_CLASSPATH);
   }
 
-  public IRuntimeClasspathEntry[] resolveClasspath(final IRuntimeClasspathEntry[] entries,
+  @Override
+public IRuntimeClasspathEntry[] resolveClasspath(final IRuntimeClasspathEntry[] entries,
       final ILaunchConfiguration configuration) throws CoreException {
     IProgressMonitor monitor = new NullProgressMonitor(); // XXX
     return MavenPlugin.getMaven().execute(new ICallable<IRuntimeClasspathEntry[]>() {
-      public IRuntimeClasspathEntry[] call(IMavenExecutionContext context, IProgressMonitor monitor)
+      @Override
+	public IRuntimeClasspathEntry[] call(IMavenExecutionContext context, IProgressMonitor monitor)
           throws CoreException {
         return resolveClasspath0(entries, configuration, monitor);
       }
@@ -114,7 +117,7 @@ public class MavenRuntimeClasspathProvider extends StandardClasspathProvider {
   IRuntimeClasspathEntry[] resolveClasspath0(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration,
       IProgressMonitor monitor) throws CoreException {
     int scope = getArtifactScope(configuration);
-    Set<IRuntimeClasspathEntry> all = new LinkedHashSet<IRuntimeClasspathEntry>(entries.length);
+    Set<IRuntimeClasspathEntry> all = new LinkedHashSet<>(entries.length);
     for(IRuntimeClasspathEntry entry : entries) {
       if(entry.getType() == IRuntimeClasspathEntry.CONTAINER
           && MavenClasspathHelpers.isMaven2ClasspathContainer(entry.getPath())) {
@@ -174,7 +177,7 @@ public class MavenRuntimeClasspathProvider extends StandardClasspathProvider {
       }
 
       // ECLIPSE-33: applications from test sources should use test scope 
-      final Set<IPath> testSources = new HashSet<IPath>();
+      final Set<IPath> testSources = new HashSet<>();
       IJavaProject javaProject = JavaRuntime.getJavaProject(configuration);
       IMavenProjectFacade facade = projectManager.create(javaProject.getProject(), new NullProgressMonitor());
       if(facade == null) {
@@ -332,7 +335,7 @@ public class MavenRuntimeClasspathProvider extends StandardClasspathProvider {
   }
 
   private static List<ILaunchConfiguration> getLaunchConfiguration(IProject project) throws CoreException {
-    ArrayList<ILaunchConfiguration> result = new ArrayList<ILaunchConfiguration>();
+    ArrayList<ILaunchConfiguration> result = new ArrayList<>();
     ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
     ILaunchConfiguration[] configurations = launchManager.getLaunchConfigurations();
     for(ILaunchConfiguration config : configurations) {
