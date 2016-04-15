@@ -46,4 +46,5 @@ public class CoreActivator implements BundleActivator {
 	public static CoreActivator getInstance() {
 		return instance;
 	}
+	
 }

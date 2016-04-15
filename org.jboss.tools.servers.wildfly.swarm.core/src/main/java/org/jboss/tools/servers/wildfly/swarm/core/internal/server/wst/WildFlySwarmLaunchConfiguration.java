@@ -32,6 +32,7 @@ import org.eclipse.jdt.launching.environments.IExecutionEnvironment;
 import org.jboss.ide.eclipse.as.core.util.JBossServerBehaviorUtils;
 import org.jboss.ide.eclipse.as.wtp.core.server.behavior.ControllableServerBehavior;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.CoreActivator;
+import org.jboss.tools.servers.wildfly.swarm.core.internal.hcr.HotClassReloaderUtil;
 
 /**
  * @author Fred Bricon
@@ -85,6 +86,17 @@ public class WildFlySwarmLaunchConfiguration extends JavaLaunchDelegate {
 			DebugPlugin.getDefault().removeDebugEventListener(terminateListener);
 			behavior.putSharedData(TERMINATE_LISTENER, null);
 		}
+	}
+	
+	
+	@Override
+	public String getVMArguments(ILaunchConfiguration configuration) throws CoreException {
+		final WildFlySwarmServerBehavior behavior = (WildFlySwarmServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(configuration);
+		String vmArgs = super.getVMArguments(configuration);
+		if ("debug".equals(behavior.getServer().getMode())){
+			vmArgs = HotClassReloaderUtil.decorateVMArgs(configuration, vmArgs);
+		}
+		return vmArgs;
 	}
 
 	@Override

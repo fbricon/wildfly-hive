@@ -22,14 +22,17 @@ import org.jboss.tools.servers.wildfly.swarm.core.internal.CoreActivator;
 
 public class WildFlySwarmServer extends ServerDelegate implements IExtendedPropertiesProvider{
 	
+	@Override
 	public IStatus canModifyModules(IModule[] add, IModule[] remove) {
 		return new Status(IStatus.WARNING, CoreActivator.PLUGIN_ID, "This server doesn't support modules");
 	}
 
+	@Override
 	public IModule[] getChildModules(IModule[] module) {
 		return new IModule[0];
 	}
 
+	@Override
 	public IModule[] getRootModules(IModule module) throws CoreException {
 		return new IModule[] { module };
 	}

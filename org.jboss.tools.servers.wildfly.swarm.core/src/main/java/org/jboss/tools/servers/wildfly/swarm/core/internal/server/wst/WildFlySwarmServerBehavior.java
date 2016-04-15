@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.jboss.tools.servers.wildfly.swarm.core.internal.server.wst;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
@@ -29,6 +27,7 @@ import org.eclipse.wst.server.core.ServerUtil;
 import org.jboss.ide.eclipse.as.core.util.JBossServerBehaviorUtils;
 import org.jboss.ide.eclipse.as.wtp.core.server.behavior.ControllableServerBehavior;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.MainClassDetector;
+import org.jboss.tools.servers.wildfly.swarm.core.internal.SocketUtil;
 
 /**
  * Handles WildFly Swarm server instances' behavior
@@ -46,6 +45,7 @@ public class WildFlySwarmServerBehavior extends ControllableServerBehavior  {
 		if (server == null) {
 			return;
 		}
+		
 		String projectName = workingCopy.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
 		if (projectName == null) {
 			projectName = server.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
@@ -64,7 +64,7 @@ public class WildFlySwarmServerBehavior extends ControllableServerBehavior  {
 		
         StringBuilder vmArgs = new StringBuilder(DEVAULT_VM_ARGS);
         int targetPort = 8080;
-		int portOffset = detectPortOffset(targetPort);
+		int portOffset = SocketUtil.detectPortOffset(targetPort);
         if (portOffset > 0) {
         	   targetPort += portOffset;
                vmArgs.append(" -Dswarm.port.offset=").append(portOffset);
@@ -79,17 +79,6 @@ public class WildFlySwarmServerBehavior extends ControllableServerBehavior  {
 		}
 		//if m2e project only
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.jboss.tools.servers.wildfly.swarm.launchconfig.classpathProvider");
-	}
-
-	private int detectPortOffset(int port) {
-		for (int offset=0; offset<100;offset++) {
-		   int newPort = port+offset;
-		   try (Socket socket = new Socket("localhost", newPort)) {
-		   } catch (IOException ignored) {
-			   return offset;
-		   }
-		}
-		return -1;//TODO handle error?
 	}
 
 	@Override
