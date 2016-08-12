@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.jboss.tools.servers.wildfly.swarm.core.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -130,13 +132,23 @@ public class WildlfySwarmDetectionJob extends Job {
 
 	private boolean isSwarmEntry(IClasspathEntry cpe) {
 		//this is a quick n' very dirty detection
-		if (cpe.getEntryKind()==IClasspathEntry.CPE_LIBRARY
-				|| cpe.getEntryKind()==IClasspathEntry.CPE_PROJECT) {
+		if (cpe.getEntryKind()==IClasspathEntry.CPE_LIBRARY) {
 			IPath path = cpe.getPath();
 			String name = path.lastSegment();
-			//currently, according to Maven central search, 
-			//there's only 1 proper match for that artifactId
-			return name.startsWith("container-api");
+			return name.startsWith("container-") && containsSwarm(path.toFile());
+		}
+		return false;
+	}
+
+	private boolean containsSwarm(File file) {
+		if (file == null || file.isDirectory() || !file.canRead()) {
+			return false;
+		}
+		try (ZipFile zip = new ZipFile(file)) {
+			return zip.getEntry("org/wildfly/swarm/Swarm.class") != null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return false;
 	}
