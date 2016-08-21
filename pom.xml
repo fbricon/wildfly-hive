@@ -27,9 +27,9 @@
   <packaging>pom</packaging>
   <inceptionYear>2016</inceptionYear>
   <properties>
-    <tycho-version>0.24.0</tycho-version>
+    <tycho-version>0.26.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <tycho.test.jvmArgs>-Xmx800m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
+    <tycho.test.jvmArgs>-Xmx800m</tycho.test.jvmArgs>
     <m2e-core-version>1.7.0</m2e-core-version>
   </properties>
 
@@ -56,7 +56,7 @@
     <repository>
       <id>m2e</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/technology/m2e/milestones/1.7</url>
+      <url>http://download.eclipse.org/technology/m2e/releases/1.7</url>
     </repository>
   </repositories>
 
@@ -152,7 +152,7 @@
         </os>
       </activation>
       <properties>
-        <tycho.test.jvmArgs>-Xmx800m -XX:MaxPermSize=256m -XstartOnFirstThread</tycho.test.jvmArgs>
+        <tycho.test.jvmArgs>-Xmx800m -XstartOnFirstThread</tycho.test.jvmArgs>
       </properties>
       <build>
         <pluginManagement>
