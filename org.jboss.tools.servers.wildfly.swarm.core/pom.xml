@@ -15,7 +15,7 @@
 	<artifactId>org.jboss.tools.servers.wildfly.swarm.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<properties>
-		<fakereplace.version>1.0.0.Alpha3-SNAPSHOT</fakereplace.version>
+		<fakereplace.version>1.0.0.Alpha3</fakereplace.version>
 	</properties>
 	<build>
 		<resources>
@@ -54,6 +54,18 @@
 							<version>${fakereplace.version}</version>
 						</artifactItem>
 					</artifactItems>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- make sure lib dir is removed after clean to avoid "dirty" build -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/extras/</directory>
+						</fileset>
+					</filesets>
 				</configuration>
 			</plugin>
 		</plugins>
