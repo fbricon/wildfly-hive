@@ -1,23 +1,26 @@
 sudo: false
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 cache:
   directories:
-    - $HOME/.m2
+  - $HOME/.m2
 git:
   depth: 2
 env:
   global:
-    - DISPLAY=:99.0
-before_install:
-#  - sh -e /etc/init.d/xvfb start - sleep 10
-
-# no-op to override Travis' default `mvn install` step
+  - DISPLAY=:99.0
+before_install: 
 install: true
-
 script:
-  - mvn clean verify
+- mvn clean verify
 notifications:
   email:
-    - fbricon@gmail.com
+  - fbricon@gmail.com
+deploy:
+  provider: bintray
+  file: ./bintray.json
+  user:
+    secure: YamM5tjroNlnC/MjSFPF9OiDNi2EWGcfcdkUiQSA92xgkOzAvMkmT8YxPbNknj2gQAzpXUnquRhERbWM13RdqSf+s3labXokbb6ft2uK9i2HC/6akHxuH2KJLFK++J8lvSz6tX9zz88/2xGDBVGZmz5O0+LAKoC8FL+Cg6uBFPPz43dV9s2gdB0dvnEKqvPRFuAD6sroCrGyS0msvJNY4mLIrxjW7kob3UVJysXeBrfAEm2ZDIY1T1wea4Z5nXRUXy6kRcP3Gh6ftSvCx8TXvDKxd+LA1Pp+zBe45MGFW9pCIjZIgy4W3CkGDpf+FgGb/5Y3hGh3RabLU0S+EgoORZnd7jI/URwaZ4IhusiGeY38MYOCylRtmfAcwkdVg6PRnxPPckc2Ob/8SbwlYRbPzDbvWr5AAAZINrmnB2Q9EnvI4/VvUfL5d2tg3HRAlEDbhU1TPgfSJR0M51G5QCmSx5euBgqjNMjZxoft0zLe93KYLWEfjHZvvSZ12x13MWfRnK2EVCqVWD66a7VkQKV/LOW7Z+bybgrSyFHsVQTnkzC2vdXd3Q+R9MfHXTnIBL3OnlfveyT3E5zbG3Z0/f98qPLpxEPy+ecqRhJA1bt5eMZ1tmldNhkO8tNcM7tCBgml++HlOvJ18aii0yU12gepqJfDLWEBPDnKVdKblv5uSYA=
+  key:
+    secure: elATuVq6NHeQpFdPcnsheC97Hq3frWmiclgDoxmcx39pe1w5+pDn4cflVYm6i/skVUTmRRqhJUl6ksD2WhG6yt17yMphCgskZvwlIUO+HUcg+dgpqSA0kP9yJediwzvkYQJScLu0D6dT2oGzL7po4l90hGgDUAxr4WPcCz9U6BZSDfwB0kTFrJC+zSj1pRyjgszNXowP8JUK2WCgRrcCv64GLAtJ9Dn+ks7xZhxni8uqdm3m6hLtoH46CXH2M3Pcfy84ZChaHTHyigpbVfrNRVUhwNLhrG88By6di8e4ldxIRPOSC8nmzNKkPgPZRvv03CHCfN67EUpQvcMZyIkvUl+7m1CoFBkt8i60P8fuS3qXEgbrgPYTOlpnXk/xMnex+xmAkgTFJUN1iePZ5TtRKU2w8Mj/M2HOHmB2YfVOYkaqI1lz/amWRQyLmYk7upbKQk3/kE53n3ugPLhtex1RoJ/wX6sDJHXpCResXzQMgTfPAAxoDSssfwINFASRFLgNe0eOFf9fewdLcqYqzy8+K4pUkSCbowsV0QzdFkgXWvDKJjaetNihZB+ssBsXkwtRN2MmyHcZLWfyXo3GiWu1kvAjgiqx89nvKty7FYfBZ3aagX7q+jY60cGrakDm+hks0OGt8V3gzANVNF4hKmBjb0R6orO8EnQM0ea7140dpEg=

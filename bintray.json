@@ -1,0 +1,20 @@
+{
+    "package": {
+        "subject": "fbricon",
+        "repo": "poc",
+        "name": "wildfly-hive"
+    },
+    "version": {
+        "name": "latest"
+    },
+    "files": [
+        {
+            "includePattern": "org.jboss.tools.servers.wildfly.swarm.site/target/repository/(.*)",
+            "uploadPattern": "$1",
+            "matrixParams": {
+                "override": 1
+            }
+        }
+    ],
+    "publish": true
+}
