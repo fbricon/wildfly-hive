@@ -9,7 +9,7 @@ But instead of coming up with a new view, the existing Servers view from Eclipse
 
 image::http://content.screencast.com/users/fbricon/folders/Jing/media/9bfd8cee-ff66-40fc-aa25-596e2ab716d7/00000321.png[width=600]
 
-The PoC can be installed  in Eclipse from this p2 repository : http://download.jboss.org/jbosstools/builds/staging/wildfly-hive/all/repo/
+The PoC can be installed in Eclipse from this p2 repository : https://dl.bintray.com/fbricon/poc/wildfly-hive/latest/
 
 It requires Eclipse WTP, m2e, JBoss Tools Server Tools to run.
 
@@ -19,5 +19,7 @@ It requires Eclipse WTP, m2e, JBoss Tools Server Tools to run.
 - profit
 
 image:http://img.youtube.com/vi/s8xmaBurfCg/0.jpg["Click to play demo", width=600, link="https://www.youtube.com/watch?v=s8xmaBurfCg"]
+
+When started in debug mode, https://github.com/fakereplace/fakereplace[fakereplace] is launched to allow hot code replacement of changed classes, without restarting the JVM. 
 
 Since it's a PoC, it's lacking a huge amount of features to make it really usable, like being able to configure the server launch configuration, proper port offset, configuration read from pom.xml, run multiple instances of the same server, make the swarm detection more reliable and so on. But it's EPL, so feel free to fork, hack and PR away.
