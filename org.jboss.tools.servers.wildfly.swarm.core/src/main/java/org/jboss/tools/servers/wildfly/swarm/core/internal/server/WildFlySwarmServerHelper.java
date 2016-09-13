@@ -11,6 +11,9 @@
 package org.jboss.tools.servers.wildfly.swarm.core.internal.server;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,6 +58,18 @@ public class WildFlySwarmServerHelper {
 					 .filter(s -> projectName.equals(s.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null)))
 					 .findFirst()
 					 .orElse(null);
+	}
+	
+	public static Collection<IServer> findAllWildflySwarmServers() {
+		IServer[] servers = ServerCore.getServers();
+		if (servers.length == 0) {
+			return Collections.emptyList();
+		}
+		IServerType type = ServerCore.findServerType(SERVER_TYPE);
+		
+		return Arrays.stream(servers)
+					 .filter(s -> type.equals(s.getServerType()))
+					 .collect(Collectors.toList());
 	}
 	
 }

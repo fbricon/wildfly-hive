@@ -66,7 +66,7 @@ public class HotClassReloaderUtil {
 	public static Collection<IPackageFragment> getTopLevelPackages(IJavaProject javaProject) {
 		Set<IPackageFragment> packages = new LinkedHashSet<>();
 		try {
-			if (javaProject == null || !javaProject.isOpen()) {
+			if (javaProject == null || !javaProject.getProject().isAccessible()) {
 				return packages;
 			}
 			for (IPackageFragment f : javaProject.getPackageFragments()){

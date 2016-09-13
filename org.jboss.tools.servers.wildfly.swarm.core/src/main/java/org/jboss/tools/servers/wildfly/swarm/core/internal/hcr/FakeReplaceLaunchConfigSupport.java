@@ -19,7 +19,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.ResourceUtil;
-import org.jboss.tools.servers.wildfly.swarm.core.internal.SocketUtil;
 
 public class FakeReplaceLaunchConfigSupport implements HotClassReloaderLaunchConfigSupport {
 
@@ -38,8 +37,7 @@ public class FakeReplaceLaunchConfigSupport implements HotClassReloaderLaunchCon
 		String javaAgentUrl = ResourceUtil.getEmbeddedFileUrl(FAKEREPLACE_FILENAME);
 		String fakeReplaceArgs = " -Xbootclasspath/a:\""+javaAgentUrl+"\"";
 		fakeReplaceArgs += " -javaagent:\""+javaAgentUrl+"=";
-		//fakeReplaceArgs += "packages="+getPackages()+",";
-		fakeReplaceArgs += "port="+SocketUtil.getNextAvailablePort(6555)+",";
+		fakeReplaceArgs += "packages="+getPackages();
 		fakeReplaceArgs += "\"";
 		
 		//System.err.println("Fakereplace args: "+ fakeReplaceArgs);

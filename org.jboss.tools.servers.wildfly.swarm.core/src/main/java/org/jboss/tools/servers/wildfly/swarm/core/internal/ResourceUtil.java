@@ -12,6 +12,7 @@ package org.jboss.tools.servers.wildfly.swarm.core.internal;
 
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,7 +34,7 @@ public class ResourceUtil {
 			try {
 				hcrUrl = FileLocator.resolve(hcrEmbeddedUrl);
 				URI uri = new URI(hcrUrl.toString().replace(" ", "%20"));
-				return Paths.get(uri).toAbsolutePath().toString();
+				return Paths.get(uri).toRealPath(LinkOption.NOFOLLOW_LINKS).toString();
 			} catch (Exception e) {
 				IStatus status = new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to determine local url for "+fileName, e);
 				throw new CoreException(status);
