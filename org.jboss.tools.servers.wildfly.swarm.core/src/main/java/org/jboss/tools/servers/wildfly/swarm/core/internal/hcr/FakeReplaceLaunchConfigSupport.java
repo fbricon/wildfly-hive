@@ -11,13 +11,10 @@
 package org.jboss.tools.servers.wildfly.swarm.core.internal.hcr;
 
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.jboss.tools.servers.wildfly.swarm.core.internal.ResourceUtil;
 
 public class FakeReplaceLaunchConfigSupport implements HotClassReloaderLaunchConfigSupport {
@@ -26,28 +23,34 @@ public class FakeReplaceLaunchConfigSupport implements HotClassReloaderLaunchCon
 	
 	private static final String FAKEREPLACE_FILENAME = BUNDLE.getString("fakereplace");
 
-	private IJavaProject javaProject; 
+	private ILaunchConfiguration launchConfig;
 	
 	public FakeReplaceLaunchConfigSupport(ILaunchConfiguration launchConfig) throws CoreException {
-		javaProject = JavaRuntime.getJavaProject(launchConfig);
+		this.launchConfig = launchConfig;
 	}
 
 	@Override
 	public String appendVMArgs(String vmArgs) throws CoreException {
 		String javaAgentUrl = ResourceUtil.getEmbeddedFileUrl(FAKEREPLACE_FILENAME);
-		String fakeReplaceArgs = " -Xbootclasspath/a:\""+javaAgentUrl+"\"";
-		fakeReplaceArgs += " -javaagent:\""+javaAgentUrl+"=";
-		fakeReplaceArgs += "packages="+getPackages();
-		fakeReplaceArgs += "\"";
-		
-		//System.err.println("Fakereplace args: "+ fakeReplaceArgs);
-		return vmArgs+fakeReplaceArgs;
+		StringBuilder fullVmArgs = new StringBuilder(vmArgs)
+				.append(" -Xbootclasspath/a:\"")
+				.append(javaAgentUrl)
+				.append("\" -javaagent:\"")
+				.append(javaAgentUrl)
+				.append("=index-file=")
+				.append(ResourcesPlugin.getWorkspace().getRoot().getRawLocation().toOSString())
+				.append(launchConfig.getName().replaceAll(" ", "_"))
+				.append("/fakereplace.index\"");
+		return fullVmArgs.toString();
 	}
 
-	private String getPackages() {
+	/*
+	private String getPackages() throws CoreException {
+		IJavaProject javaProject = JavaRuntime.getJavaProject(launchConfig);
 		return HotClassReloaderUtil.getTopLevelPackages(javaProject)
 				.stream()
 				.map(IPackageFragment::getElementName)
 				.collect(Collectors.joining(";"));
 	}
+	*/
 }

@@ -65,12 +65,12 @@ public class WildFlySwarmServerBehavior extends ControllableServerBehavior  {
         StringBuilder vmArgs = new StringBuilder(DEVAULT_VM_ARGS);
         int targetPort = 8080;
 		int portOffset = SocketUtil.detectPortOffset(targetPort);
-        if (portOffset > 0) {
-        	   targetPort += portOffset;
-               vmArgs.append(" -Dswarm.port.offset=").append(portOffset);
-        }
+		if (portOffset > 0) {
+     	   targetPort += portOffset;
+           vmArgs.append(" -Dswarm.port.offset=").append(portOffset);
+		}
 		workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs.toString());
-			
+	
 		final ControllableServerBehavior behavior = (ControllableServerBehavior)JBossServerBehaviorUtils.getControllableBehavior(server);
 		//TODO parse Main class AST to detect default context root?
 		if (behavior != null) {
