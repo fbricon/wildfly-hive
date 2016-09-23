@@ -10,6 +10,11 @@
  ******************************************************************************/
 package org.jboss.tools.servers.wildfly.swarm.core.internal.hcr;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -37,11 +42,28 @@ public class FakeReplaceLaunchConfigSupport implements HotClassReloaderLaunchCon
 				.append(javaAgentUrl)
 				.append("\" -javaagent:\"")
 				.append(javaAgentUrl)
-				.append("=index-file=")
-				.append(ResourcesPlugin.getWorkspace().getRoot().getRawLocation().toOSString())
-				.append(launchConfig.getName().replaceAll(" ", "_"))
-				.append("/fakereplace.index\"");
+				.append("=log=info,")
+				.append("index-file=")
+				.append(getFakereplaceIndex())
+				.append("\"");
 		return fullVmArgs.toString();
+	}
+
+	private String getFakereplaceIndex() {
+		Path parent = Paths.get(ResourcesPlugin.getWorkspace().getRoot().getRawLocation().toOSString(),
+				".metadata",
+				".fakereplace",
+				launchConfig.getName().replaceAll(" ", "_"))
+				.toAbsolutePath();
+
+		if (Files.notExists(parent)) {
+			try {
+				Files.createDirectories(parent);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return parent.resolve("fakereplace.index").toString();
 	}
 
 	/*

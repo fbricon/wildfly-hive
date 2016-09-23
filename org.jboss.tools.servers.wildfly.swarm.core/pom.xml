@@ -15,7 +15,7 @@
 	<artifactId>org.jboss.tools.servers.wildfly.swarm.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<properties>
-		<fakereplace.version>1.0.0.Alpha4</fakereplace.version>
+		<fakereplace.version>1.0.0.Alpha5</fakereplace.version>
 	</properties>
 	<build>
 		<resources>
