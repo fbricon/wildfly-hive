@@ -50,7 +50,7 @@ public class ClasspathChangeListener implements IElementChangedListener {
 
 	private boolean isClasspathChanged(IJavaElementDelta delta) {
 		return delta.getKind() == IJavaElementDelta.REMOVED ||
-				(0 != (delta.getFlags() & (IJavaElementDelta.F_CLASSPATH_CHANGED | IJavaElementDelta.F_RESOLVED_CLASSPATH_CHANGED)));
+				(0 != (delta.getFlags() & (IJavaElementDelta.F_CLASSPATH_CHANGED | IJavaElementDelta.F_RESOLVED_CLASSPATH_CHANGED | IJavaElementDelta.F_CONTENT)));
 	}
 
 }
