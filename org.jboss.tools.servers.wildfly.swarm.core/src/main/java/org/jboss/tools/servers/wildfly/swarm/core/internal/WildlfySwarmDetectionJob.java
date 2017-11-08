@@ -8,11 +8,13 @@
  * Contributors:
  *     Red Hat, Inc. - initial API and implementation
  ******************************************************************************/
+
 package org.jboss.tools.servers.wildfly.swarm.core.internal;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -54,10 +56,17 @@ public class WildlfySwarmDetectionJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Detecting Wildfly Swarm projects", IProgressMonitor.UNKNOWN);
-		final ArrayList<IJavaProject> projects;
+		final ArrayList<IJavaProject> projects = new ArrayList<>();
 		synchronized (this.queue) {
-			projects = new ArrayList<>(this.queue);
-			this.queue.clear();
+			Iterator<IJavaProject> it = this.queue.iterator();
+
+			while (it.hasNext()) {
+				IJavaProject project = it.next();
+				if (project.hasBuildState()) {
+					projects.add(project);
+					it.remove();
+				}
+			}
 		}
 		projects.forEach(p -> detectSwarm(p, monitor));
 		if (!queue.isEmpty()) {
@@ -75,7 +84,7 @@ public class WildlfySwarmDetectionJob extends Job {
 			deleteServerIfNecessary(p, monitor);
 		}
 	}
-	
+
 	private void createServerIfNecessary(IJavaProject p, IProgressMonitor monitor) {
 		IServer server = WildFlySwarmServerHelper.findWildflySwarmServer(p, monitor);
 		if (server == null) {
@@ -103,10 +112,10 @@ public class WildlfySwarmDetectionJob extends Job {
 		if (mainClasses.isEmpty()) {
 			return;
 		}
-		if ( mainClasses.size() > 1) {
+		if (mainClasses.size() > 1) {
 			//ohoh
 		}
-		String mainClass =  mainClasses.iterator().next();
+		String mainClass = mainClasses.iterator().next();
 		WildFlySwarmServerHelper.createServer(p, mainClass, monitor);
 	}
 
@@ -121,18 +130,16 @@ public class WildlfySwarmDetectionJob extends Job {
 		try {
 			IClasspathEntry[] resolvedClasspath = p.getResolvedClasspath(true);
 			Stream<IClasspathEntry> classpath = Stream.of(resolvedClasspath);//.parallel();
-			return classpath.filter(cpe -> isSwarmEntry(cpe))
-							.findFirst()
-							.isPresent();
+			return classpath.filter(cpe -> isSwarmEntry(cpe)).findFirst().isPresent();
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
-		return  false;
+		return false;
 	}
 
 	private boolean isSwarmEntry(IClasspathEntry cpe) {
 		//this is a quick n' very dirty detection
-		if (cpe.getEntryKind()==IClasspathEntry.CPE_LIBRARY) {
+		if (cpe.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
 			IPath path = cpe.getPath();
 			String name = path.lastSegment();
 			return name.startsWith("container-") && containsSwarm(path.toFile());

@@ -53,7 +53,7 @@ public class ProjectChangeListener implements IElementChangedListener, IMavenPro
 			if (event.getKind() == MavenProjectChangedEvent.KIND_ADDED) {
 				String packaging = event.getMavenProject().getPackaging();
 
-				if (packaging.equals("jar") || packaging.equals("war")) {
+				if ("jar".equals(packaging) || "war".equals(packaging)) {
 					detectionJob.analyze(JavaCore.create(event.getMavenProject().getProject()));
 				}
 			}
